@@ -24,7 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "PPM.hpp"
+#include "PWM.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,7 +56,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+static void setPWMChannel(PWMChannel &pwm, int channel, int percentage);
+static uint8_t getPPM(PPMChannel &ppm, int channel);
 /* USER CODE END 0 */
 
 /**
@@ -65,7 +67,26 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	/* defining channels begin */
+	constexpr uint8_t elevator_channel{0};
+	constexpr uint8_t left_throttle_channel{1};
+	constexpr uint8_t right_throttle_channel{2};
+	constexpr uint8_t left_aileron_channel{3};
+	constexpr uint8_t right_aileron_channel{4};
+	constexpr uint8_t rudder_mix{5};
 
+	constexpr uint8_t elevator_ppm{0};
+	constexpr uint8_t throttle_ppm{1};
+	constexpr uint8_t aileron_ppm{2};
+	constexpr uint8_t rudder_ppm{3};
+	/* defining channels end */
+
+	/* mixes */
+	uint16_t left_aileron_mix{0};
+	uint16_t right_aileron_mix{0};
+	uint16_t left_throttle_mix{0};
+	uint16_t right_throttle_mix{0};
+	uint16_t elevator_mix{0};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -91,12 +112,23 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
+  PWMChannel *pwm;
+  PPMChannel *ppm;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  uint8_t elevator_percent = getPPM(ppm, elevator_ppm);
+	  uint8_t throttle_percent = getPPM(ppm, throttle_ppm);
+	  uint8_t rudder_percent = getPPM(ppm, rudder_ppm);
+	  uint8_t roll_percent = getPPM(ppm, aileron_ppm);
+
+	  /* insert mix here */
+
+	  setPWMChannel(pwm, left_aileron_channel, left_aileron_mix);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -151,7 +183,21 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+/*
+* Sets an individual PWM channel to the desired output.
+*/
+static void setPWMChannel(PWMChannel &pwm, int channel, int percentage)
+{
+    //Input protection
+    if(percentage > 100) {percentage = 100;}
+    if(percentage < 0) {percentage = 0;}
+    pwm.set(channel, percentage);
+}
 
+static uint8_t getPPM(PPMChannel &ppm, int channel)
+{
+    return ppm.get(channel);
+}
 /* USER CODE END 4 */
 
 /**
