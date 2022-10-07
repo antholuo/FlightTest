@@ -73,7 +73,7 @@ int main(void)
 	constexpr uint8_t right_throttle_channel{2};
 	constexpr uint8_t left_aileron_channel{3};
 	constexpr uint8_t right_aileron_channel{4};
-	constexpr uint8_t rudder_mix{5};
+	constexpr uint8_t rudder_channel{5};
 
 	constexpr uint8_t elevator_ppm{0};
 	constexpr uint8_t throttle_ppm{1};
@@ -87,6 +87,7 @@ int main(void)
 	uint16_t left_throttle_mix{0};
 	uint16_t right_throttle_mix{0};
 	uint16_t elevator_mix{0};
+	uint16_t rudde_mix{0};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -121,14 +122,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  /* getting values */
+
+	  // todo: add arming
 	  uint8_t elevator_percent = getPPM(ppm, elevator_ppm);
 	  uint8_t throttle_percent = getPPM(ppm, throttle_ppm);
 	  uint8_t rudder_percent = getPPM(ppm, rudder_ppm);
 	  uint8_t roll_percent = getPPM(ppm, aileron_ppm);
 
 	  /* insert mix here */
+	  left_aileron_mix = 0 - roll_percent;
+	  right_aileron_mix = 0+ roll_percent;
+	  elevator_mix = elevator_percent;
+	  left_throttle_mix = throttle_percent + 0.3 * rudder_percent;
+	  right_throttle_mix = throttle_percent - 0.3 * rudder_percent;
+	  rudder_mix = rudder_percent;
 
+	  /* pwm outputs */
 	  setPWMChannel(pwm, left_aileron_channel, left_aileron_mix);
+	  setPWMChannel(pwm, right_aileron_channel, right_aileron_mix);
+	  setPWMChannel(pwm, elevator_channel, elevator_mix);
+	  setPWMChannel(pwm, left_throttle_channel, left_throttle_mix);
+	  setPWMChannel(pwm, right_throttle_channel, right_throttle_mix);
+	  setPWMChannel(pwm, rudder_channel, rudder_mix);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
