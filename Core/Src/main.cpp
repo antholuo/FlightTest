@@ -87,7 +87,7 @@ int main(void)
 	uint16_t left_throttle_mix{0};
 	uint16_t right_throttle_mix{0};
 	uint16_t elevator_mix{0};
-	uint16_t rudde_mix{0};
+	uint16_t rudder_mix{0};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -113,9 +113,9 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
-  PWMChannel *pwm;
-  PPMChannel *ppm;
-
+  PWMChannel pwm;
+  PPMChannel ppm;
+  ppm.setNumChannels(8);
   /* USER CODE END 2 */
 
   /* Infinite loop */

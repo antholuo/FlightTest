@@ -1,7 +1,7 @@
 #include "stm32f4xx_hal.h"
 #include "main.h"
 #include "PWM.hpp"
-#define MAX_CHANNELS 4
+#define MAX_CHANNELS 8
 #define NUM_AVAILABLE_CHANNELS 8
 #define DSHOT_DATA_FRAME_LEN 16
 #define DSHOT_DMA_BUFFER_SIZE 18
@@ -12,6 +12,7 @@
 #define NUM_DSHOT_MOTORS 4
 
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim3;
 
 static const PWMPinConfig PWM_CONFIG[MAX_CHANNELS]
 {
